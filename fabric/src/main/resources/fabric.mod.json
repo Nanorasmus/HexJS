@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "hex_js",
+  "version": "${version}",
+
+  "name": "HexJS",
+  "description": "",
+  "authors": [],
+  "contact": {},
+
+  "license": "MIT",
+  "icon": "icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "me.nanorasmus.nanodev.hex_js.fabric.HexJSFabric"
+    ],
+    "client": [
+      "me.nanorasmus.nanodev.hex_js.fabric.HexJSFabricClient"
+    ],
+    "server": [
+      "me.nanorasmus.nanodev.hex_js.fabric.HexJSFabricServer"
+    ]
+  },
+  "mixins": [
+    "hex_js.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14",
+    "fabric": "*",
+    "minecraft": "=1.19.2",
+    "hexcasting": ">=0.10.3"
+  }
+}
