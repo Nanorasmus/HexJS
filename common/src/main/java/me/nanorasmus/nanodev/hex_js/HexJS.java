@@ -1,11 +1,7 @@
 package me.nanorasmus.nanodev.hex_js;
 
+import at.petrak.hexcasting.api.PatternRegistry;
 import dev.architectury.event.events.common.LifecycleEvent;
-import dev.latvian.mods.kubejs.KubeJS;
-import dev.latvian.mods.kubejs.KubeJSCommon;
-import dev.latvian.mods.kubejs.KubeJSPlugin;
-import dev.latvian.mods.kubejs.util.KubeJSPlugins;
-import me.nanorasmus.nanodev.hex_js.kubejs.HexKubeJSPlugin;
 import me.nanorasmus.nanodev.hex_js.storage.StorageManager;
 import net.minecraft.server.MinecraftServer;
 

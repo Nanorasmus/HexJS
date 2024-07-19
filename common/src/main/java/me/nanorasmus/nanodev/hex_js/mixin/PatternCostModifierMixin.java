@@ -11,6 +11,7 @@ import at.petrak.hexcasting.api.spell.casting.eval.FrameEvaluate;
 import at.petrak.hexcasting.api.spell.casting.eval.SpellContinuation;
 import at.petrak.hexcasting.api.spell.casting.sideeffects.OperatorSideEffect;
 import at.petrak.hexcasting.api.spell.iota.Iota;
+import at.petrak.hexcasting.api.spell.iota.PatternIota;
 import at.petrak.hexcasting.api.spell.math.HexDir;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.api.spell.mishaps.Mishap;
@@ -21,9 +22,9 @@ import me.nanorasmus.nanodev.hex_js.misc.JavaMishapThrower;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.text.Text;
 import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -35,7 +36,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 @Mixin(CastingHarness.class)
 public class PatternCostModifierMixin {
     @Shadow(remap = false)
@@ -71,16 +71,22 @@ public class PatternCostModifierMixin {
     // Literal translated kotlin code from hex to completely override the function with my own snippets here and there
     @Inject(method = "executeIotas", at = @At("HEAD"), cancellable = true)
     public void executeIotas(List<? extends Iota> iotas, ServerWorld world, CallbackInfoReturnable<ControllerInfo> cir) {
-        world.getPlayers().forEach((p) -> p.sendMessage(Text.of("You suck")));
         // Initialize the continuation stack to a single top-level eval for all iotas.
         var continuation = SpellContinuation.Done.INSTANCE.pushFrame(new FrameEvaluate(new SpellList.LList(0, iotas), false));
         // Begin aggregating info
         var info = new CastingHarness.TempControllerInfo(false);
         var lastResolutionType = ResolvedPatternType.UNRESOLVED;
         var sound = HexEvalSounds.NOTHING;
+
+        int i = 0;
         while (continuation instanceof SpellContinuation.NotDone && !info.getEarlyExit()) {
             // Take the top of the continuation stack...
             var next = ((SpellContinuation.NotDone) continuation).getFrame();
+
+            if (iotas.get(i) instanceof PatternIota) {
+                LoggerFactory.getLogger("IotaExecuter").debug("Pattern angles: " + ((PatternIota) iotas.get(i)).getPattern().anglesSignature());
+            }
+
             // ...and execute it.
             CastingHarness.CastResult result;
             try {
@@ -122,6 +128,7 @@ public class PatternCostModifierMixin {
             } else {
                 sound = sound.greaterOf(result.getSound());
             }
+            i++;
         }
 
         if (sound != null) {
