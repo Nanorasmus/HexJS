@@ -3,6 +3,7 @@ package me.nanorasmus.nanodev.hex_js.kubejs.types;
 import at.petrak.hexcasting.api.spell.SpellList;
 import at.petrak.hexcasting.api.spell.iota.*;
 import at.petrak.hexcasting.common.lib.hex.HexIotaTypes;
+import dev.latvian.mods.rhino.util.HideFromJS;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,18 +13,21 @@ public class IotaList implements IotaJS {
 
     // -- Basic stuff --
 
+    @HideFromJS
     public IotaList (List<Iota> stack) {
-        internalStack = new ListIota(stack).getList();
+        internalStack = new SpellList.LList(stack);
     }
     public IotaList (ListIota list) {
         internalStack = list.getList();
     }
 
     @Override
+    @HideFromJS
     public ListIota toIota() {
         return new ListIota(internalStack);
     }
 
+    @HideFromJS
     public ArrayList<Iota> toIotaList() {
         ArrayList<Iota> stack = new ArrayList<>();
         for (int i = 0; i < internalStack.size(); i++) {
@@ -45,15 +49,20 @@ public class IotaList implements IotaJS {
             Iota iota = internalStack.getAt(i);
             if (iota.getType() == HexIotaTypes.LIST) {
                 iotaList.add(new IotaList((ListIota) iota).copy().toIota());
-            }
-            if (iota.getType() == HexIotaTypes.DOUBLE) {
+            } else if (iota.getType() == HexIotaTypes.DOUBLE) {
                 iotaList.add(new IotaDouble((DoubleIota) iota).copy().toIota());
-            }
-            if (iota.getType() == HexIotaTypes.BOOLEAN) {
+            } else if (iota.getType() == HexIotaTypes.BOOLEAN) {
                 iotaList.add(new IotaBoolean((BooleanIota) iota).copy().toIota());
-            }
-            if (iota.getType() == HexIotaTypes.VEC3) {
+            } else if (iota.getType() == HexIotaTypes.VEC3) {
                 iotaList.add(new IotaVector((Vec3Iota) iota).copy().toIota());
+            } else if (iota.getType() == HexIotaTypes.ENTITY) {
+                iotaList.add(new IotaEntity((EntityIota) iota).copy().toIota());
+            } else if (iota.getType() == HexIotaTypes.NULL) {
+                iotaList.add(new IotaNull((NullIota) iota).copy().toIota());
+            } else if (iota.getType() == HexIotaTypes.GARBAGE) {
+                iotaList.add(new IotaGarbage((GarbageIota) iota).copy().toIota());
+            } else if (iota.getType() == HexIotaTypes.PATTERN) {
+                iotaList.add(new IotaPattern((PatternIota) iota).copy().toIota());
             }
         }
         return new IotaList(iotaList);
@@ -76,19 +85,27 @@ public class IotaList implements IotaJS {
      * @param idx The index of the desired iota
      * @return The iota at the given index, or null if there is none
      */
-    public IotaJS getListAtIndex (int idx) {
+    public IotaJS getIotaAtIndex (int idx) {
         if (idx >= internalStack.size()) {
             return null;
         }
         Iota iota = internalStack.getAt(idx);
         if (iota.getType() == HexIotaTypes.LIST) {
             return new IotaList((ListIota) iota);
-        } if (iota.getType() == HexIotaTypes.DOUBLE) {
+        } else if (iota.getType() == HexIotaTypes.DOUBLE) {
             return new IotaDouble((DoubleIota) iota);
-        } if (iota.getType() == HexIotaTypes.BOOLEAN) {
+        } else if (iota.getType() == HexIotaTypes.BOOLEAN) {
             return new IotaBoolean((BooleanIota) iota);
-        } if (iota.getType() == HexIotaTypes.VEC3) {
+        } else if (iota.getType() == HexIotaTypes.VEC3) {
             return new IotaVector((Vec3Iota) iota);
+        } else if (iota.getType() == HexIotaTypes.ENTITY) {
+            return new IotaEntity((EntityIota) iota);
+        } else if (iota.getType() == HexIotaTypes.NULL) {
+            return new IotaNull();
+        } else if (iota.getType() == HexIotaTypes.GARBAGE) {
+            return new IotaGarbage();
+        } else if (iota.getType() == HexIotaTypes.PATTERN) {
+            return new IotaPattern((PatternIota) iota);
         } else {
             return null;
         }

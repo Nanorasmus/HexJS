@@ -39,6 +39,11 @@ public class StorageManager extends PersistentState {
     public static boolean getDefaultIsWhitelist() { return defaultPatternList.isWhitelist; }
     public static void setDefaultIsWhitelist(boolean isWhitelist) { defaultPatternList.isWhitelist = isWhitelist; }
 
+    public static void addDefaultRedirect(String input, String output) {
+        defaultPatternList.addRedirect(input, output);
+    }
+
+
     public static PatternList getPatternList(UUID playerUUID) {
         return playerPatternList.getOrDefault(playerUUID, getDefaultPatternList());
     }

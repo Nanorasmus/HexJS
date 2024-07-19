@@ -1,9 +1,10 @@
 package me.nanorasmus.nanodev.hex_js;
 
-import at.petrak.hexcasting.api.PatternRegistry;
 import dev.architectury.event.events.common.LifecycleEvent;
+import me.nanorasmus.nanodev.hex_js.kubejs.HexKubeJSPlugin;
 import me.nanorasmus.nanodev.hex_js.storage.StorageManager;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.Identifier;
 
 
 public class HexJS
@@ -25,5 +26,9 @@ public class HexJS
 
 	public static Runnable initServer() {
 		return null;
+	}
+
+	public static Identifier modLoc(String key) {
+		return new Identifier(MOD_ID, key);
 	}
 }

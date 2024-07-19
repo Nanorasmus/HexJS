@@ -2,6 +2,8 @@ package me.nanorasmus.nanodev.hex_js.storage;
 
 import at.petrak.hexcasting.api.spell.math.HexAngle;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
+import at.petrak.hexcasting.api.utils.HexUtils;
+import me.nanorasmus.nanodev.hex_js.helpers.PatternHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,8 +15,6 @@ public class PatternList {
     public HashMap<String, String> redirectListRaw = new HashMap<>();
 
     public PatternList() {
-        angleSignatureList.add("qaq");
-        addRedirect("wwqe", "qaq");
     }
 
     public PatternList(boolean isWhitelist) {
@@ -36,29 +36,7 @@ public class PatternList {
     }
 
     public void addRedirect(String input, String output) {
-        ArrayList<HexAngle> angles = new ArrayList<>();
-        for (String angle : output.toLowerCase().split("")) {
-            switch (angle) {
-                case "a":
-                    angles.add(HexAngle.LEFT_BACK);
-                    break;
-                case "q":
-                    angles.add(HexAngle.LEFT);
-                    break;
-                case "w":
-                    angles.add(HexAngle.FORWARD);
-                    break;
-                case "e":
-                    angles.add(HexAngle.RIGHT);
-                    break;
-                case "d":
-                    angles.add(HexAngle.RIGHT_BACK);
-                    break;
-                case "s":
-                    angles.add(HexAngle.BACK);
-                    break;
-            }
-        }
+        ArrayList<HexAngle> angles = PatternHelper.anglesFromString(output);
         redirectList.put(input, angles);
         redirectListRaw.put(input, output);
     }

@@ -1,6 +1,8 @@
 package me.nanorasmus.nanodev.hex_js.kubejs.types;
 
+import at.petrak.hexcasting.api.spell.iota.BooleanIota;
 import at.petrak.hexcasting.api.spell.iota.Vec3Iota;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.util.math.Vec3d;
 
 public class IotaVector implements IotaJS {
@@ -8,9 +10,11 @@ public class IotaVector implements IotaJS {
 
     // -- Basic stuff --
 
+    @HideFromJS
     public IotaVector (Vec3d value) {
         this.value = value;
     }
+    @HideFromJS
     public IotaVector (Vec3Iota iota) {
         this.value = iota.getVec3();
     }
@@ -19,6 +23,7 @@ public class IotaVector implements IotaJS {
     }
 
     @Override
+    @HideFromJS
     public Vec3Iota toIota() {
         return new Vec3Iota(value);
     }
