@@ -17,7 +17,6 @@ import me.nanorasmus.nanodev.hex_js.HexJS;
 import me.nanorasmus.nanodev.hex_js.helpers.IotaHelper;
 import me.nanorasmus.nanodev.hex_js.kubejs.customPatterns.CustomPatternHolder;
 import me.nanorasmus.nanodev.hex_js.kubejs.customPatterns.CustomPatternRegistry;
-import me.nanorasmus.nanodev.hex_js.kubejs.entityCasting.EntityCasting;
 import me.nanorasmus.nanodev.hex_js.storage.StorageManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
@@ -88,33 +87,6 @@ public class HexJSBindings {
      */
     public void forceCastPlayerName(String name, List<String> patterns) {
         forceCastPlayerEntity(HexJS.server.getPlayerManager().getPlayer(name), patterns);
-    }
-
-    // -- Entity Casting
-    /**
-     * Registers an entity as a caster, allowing it to cast patterns using castAsEntity
-     * @param entity The entity to register
-     */
-    public void registerEntityAsCaster(Entity entity) {
-        EntityCasting.registerEntityAsCaster(entity);
-    }
-
-    /**
-     * Checks whether an entity is a caster, this includes players.
-     * @param entity The entity in question
-     */
-    public boolean isEntityCaster(Entity entity) {
-        return EntityCasting.isEntityCaster(entity);
-    }
-
-    /**
-     * Casts a spell as an entity, only works on non-players, for player casting see forceCastPlayer
-     * @param entity An entity that has been registered as a caster
-     * @param patterns The spell in the form of a list of pattern angles
-     */
-    public void castAsEntity(Entity entity, List<String> patterns) {
-        ArrayList<Iota> spell = IotaHelper.patternIotasFromStrings(new ArrayList<>(patterns));
-        EntityCasting.castAsEntity(entity, spell);
     }
 
     // -- Casting Items --
