@@ -36,6 +36,10 @@ public class PatternList {
         }
     }
 
+    public void clearPatternList() {
+        angleSignatureList = new ArrayList<>();
+    }
+
     public void clearRedirects() {
         redirectList = new HashMap<>();
         redirectListRaw = new HashMap<>();

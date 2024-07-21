@@ -1,22 +1,28 @@
 package me.nanorasmus.nanodev.hex_js;
 
 import dev.architectury.event.events.common.LifecycleEvent;
+import dev.architectury.event.events.common.TickEvent;
+import me.nanorasmus.nanodev.hex_js.kubejs.entityCasting.EntityCasting;
 import me.nanorasmus.nanodev.hex_js.storage.StorageManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
+
+import java.util.logging.Logger;
 
 
 public class HexJS
 {
 	public static final String MOD_ID = "hex_js";
+	public static final Logger LOGGER = Logger.getLogger("HexJS");
+	public static MinecraftServer server;
 
 	public static void init() {
 		LifecycleEvent.SERVER_STARTING.register((MinecraftServer server) -> {
 			StorageManager.load(server);
+			EntityCasting.init(server);
 		});
-		LifecycleEvent.SERVER_STOPPING.register((MinecraftServer server) -> {
-			StorageManager.save(server);
-		});
+		LifecycleEvent.SERVER_STOPPING.register((MinecraftServer server) -> StorageManager.save(server));
+		TickEvent.SERVER_PRE.register((MinecraftServer server) -> HexJS.server = server);
 	}
 
 	public static Runnable initClient() {

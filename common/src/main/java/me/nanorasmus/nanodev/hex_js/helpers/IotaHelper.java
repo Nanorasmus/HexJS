@@ -3,7 +3,10 @@ package me.nanorasmus.nanodev.hex_js.helpers;
 import at.petrak.hexcasting.api.spell.SpellList;
 import at.petrak.hexcasting.api.spell.iota.Iota;
 import at.petrak.hexcasting.api.spell.iota.ListIota;
+import at.petrak.hexcasting.api.spell.iota.PatternIota;
 import at.petrak.hexcasting.api.spell.math.HexAngle;
+import at.petrak.hexcasting.api.spell.math.HexDir;
+import at.petrak.hexcasting.api.spell.math.HexPattern;
 
 import java.util.ArrayList;
 
@@ -34,6 +37,23 @@ public class IotaHelper {
         }
         return angles;
     }
+
+    public static PatternIota patternIotaFromString(String angles) {
+        return new PatternIota(new HexPattern(
+                    HexDir.EAST,
+                    IotaHelper.anglesFromString(angles)
+        ));
+    }
+
+    public static ArrayList<Iota> patternIotasFromStrings(ArrayList<String> patternAngles) {
+        ArrayList<Iota> patterns = new ArrayList<>();
+
+        for (String angles : patternAngles) {
+            patterns.add(patternIotaFromString(angles));
+        }
+        return patterns;
+    }
+
     /**
      * Sets the element at the given index of the given list iota to the given iota and returns a modified copy of the list iota, or null if the index was out of bounds.
      * @param list the list to insert the iota into

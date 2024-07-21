@@ -41,7 +41,7 @@ public class StorageManager extends PersistentState {
     public static void setGlobalIsWhitelist(boolean isWhitelist) { defaultPatternList.isWhitelist = isWhitelist; }
 
     public static void clearGlobalList() {
-        defaultPatternList.angleSignatureList = null;
+        defaultPatternList.clearPatternList();
     }
 
     public static void addGlobalRedirect(String input, String output) {
