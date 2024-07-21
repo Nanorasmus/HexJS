@@ -1,25 +1,25 @@
 package me.nanorasmus.nanodev.hex_js.kubejs.customPatterns;
 
+import at.petrak.hexcasting.api.misc.MediaConstants;
 import at.petrak.hexcasting.api.spell.iota.Iota;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
+import dev.latvian.mods.kubejs.event.EventExit;
 import dev.latvian.mods.kubejs.event.EventJS;
-import me.nanorasmus.nanodev.hex_js.kubejs.types.IotaList;
-import me.nanorasmus.nanodev.hex_js.kubejs.types.IotaPattern;
 import net.minecraft.entity.Entity;
 
-import java.awt.*;
+import java.util.ArrayList;
 
 public class CustomPatternCastedEvent extends EventJS {
 
     private Entity caster;
-    private IotaPattern pattern;
-    private IotaList stack;
+    private HexPattern pattern;
+    private ArrayList<Iota> stack;
     private Iota ravenmind;
     private boolean shouldMishap = false;
     private String mishapMessage = "Mishap message not found!";
     private int cost = 0;
 
-    public CustomPatternCastedEvent(Entity caster, IotaPattern pattern, IotaList stack, Iota ravenmind) {
+    public CustomPatternCastedEvent(Entity caster, HexPattern pattern, ArrayList<Iota> stack, Iota ravenmind) {
         this.caster = caster;
         this.pattern = pattern;
         this.stack = stack;
@@ -30,15 +30,23 @@ public class CustomPatternCastedEvent extends EventJS {
         return caster;
     }
 
-    public IotaList getStack() {
+    public ArrayList<Iota> getStack() {
         return stack;
+    }
+
+    public void setStack(ArrayList<Iota> newStack) {
+        stack = newStack;
     }
 
     public Iota getRavenmind() {
         return ravenmind;
     }
 
-    public IotaPattern getPattern() {
+    public void setRavenmind(Iota newRavenmind) {
+        ravenmind = newRavenmind;
+    }
+
+    public HexPattern getPattern() {
         return pattern;
     }
 
@@ -56,5 +64,15 @@ public class CustomPatternCastedEvent extends EventJS {
 
     public int getCost() {
         return cost;
+    }
+    public void setCost(int newCost) {
+        cost = newCost;
+    }
+    public void setCostInDust(double newCost) {
+        cost = (int) Math.floor(newCost * MediaConstants.DUST_UNIT);
+    }
+
+    public void finish() throws EventExit {
+        success(this);
     }
 }

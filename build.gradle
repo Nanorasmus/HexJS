@@ -32,7 +32,7 @@ subprojects {
         // mappings "net.fabricmc:yarn:@YARN_MAPPINGS@:v2"
 
         implementation("dev.latvian.mods:rhino:1902.2.3-build.284")
-        implementation("dev.latvian.mods:kubejs:1902.6.2-build.74")
+        implementation("dev.latvian.mods:kubejs:1902.6.2-build.73")
     }
 }
 

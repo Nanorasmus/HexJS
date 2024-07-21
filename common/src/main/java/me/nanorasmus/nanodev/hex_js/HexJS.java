@@ -1,7 +1,6 @@
 package me.nanorasmus.nanodev.hex_js;
 
 import dev.architectury.event.events.common.LifecycleEvent;
-import me.nanorasmus.nanodev.hex_js.kubejs.HexKubeJSPlugin;
 import me.nanorasmus.nanodev.hex_js.storage.StorageManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;

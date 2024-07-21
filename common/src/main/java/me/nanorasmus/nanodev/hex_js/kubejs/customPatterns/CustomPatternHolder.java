@@ -6,11 +6,11 @@ import at.petrak.hexcasting.api.spell.casting.CastingContext;
 import at.petrak.hexcasting.api.spell.casting.eval.SpellContinuation;
 import at.petrak.hexcasting.api.spell.casting.sideeffects.OperatorSideEffect;
 import at.petrak.hexcasting.api.spell.iota.Iota;
+import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.api.spell.mishaps.Mishap;
 import dev.latvian.mods.kubejs.event.EventResult;
+import dev.latvian.mods.kubejs.script.ScriptType;
 import me.nanorasmus.nanodev.hex_js.kubejs.HexKubeJSPlugin;
-import me.nanorasmus.nanodev.hex_js.kubejs.types.IotaList;
-import me.nanorasmus.nanodev.hex_js.kubejs.types.IotaPattern;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,11 +21,11 @@ import java.util.List;
 public class CustomPatternHolder implements Action {
 
     Text name;
-    IotaPattern pattern;
+    HexPattern pattern;
     boolean isGreat;
     boolean causesBlindDiversion;
 
-    public CustomPatternHolder(String name, IotaPattern pattern, boolean isGreat, boolean causesBlindDiversion) {
+    public CustomPatternHolder(String name, HexPattern pattern, boolean isGreat, boolean causesBlindDiversion) {
         this.name = Text.of(name);
         this.pattern = pattern;
         this.isGreat = isGreat;
@@ -56,16 +56,27 @@ public class CustomPatternHolder implements Action {
     @NotNull
     @Override
     public OperationResult operate(@NotNull SpellContinuation spellContinuation, @NotNull List<Iota> stack, @Nullable Iota ravenmind, @NotNull CastingContext castingContext) {
-        castingContext.getCaster().sendMessage(Text.of(String.valueOf(stack.size())));
         CustomPatternCastedEvent event = new CustomPatternCastedEvent(
                 castingContext.getCaster(),
                 pattern,
-                new IotaList(stack),
+                new ArrayList<>(stack),
                 ravenmind
         );
-        castingContext.getCaster().sendMessage(Text.of(String.valueOf(event.getStack().getLength())));
-        EventResult result = HexKubeJSPlugin.patternCastedEventHandler.post(event);
-        castingContext.getCaster().sendMessage(Text.of(String.valueOf(event.getStack().getLength())));
+        EventResult result = HexKubeJSPlugin.patternCastedEventHandler.post(ScriptType.SERVER, event);
+
+        event = (CustomPatternCastedEvent) result.value();
+
+        if (event == null) {
+            ArrayList<OperatorSideEffect> sideEffects = new ArrayList<>();
+
+            sideEffects.add(new OperatorSideEffect.DoMishap(
+                    new CustomPatternMishap("The HexJS pattern you just cast is missing a call to the \"finish()\" function at the end of the event!"),
+                    new Mishap.Context(pattern, this)
+            ));
+
+            return new OperationResult(spellContinuation, stack, ravenmind, sideEffects);
+        }
+
 
         ArrayList<OperatorSideEffect> sideEffects = new ArrayList<>();
 
@@ -75,10 +86,10 @@ public class CustomPatternHolder implements Action {
         if (event.isMishapping())
             sideEffects.add(new OperatorSideEffect.DoMishap(
                     new CustomPatternMishap(event.getMishapMessage()),
-                    new Mishap.Context(pattern.toIota().getPattern(), this)
+                    new Mishap.Context(pattern, this)
             ));
 
 
-        return new OperationResult(spellContinuation, event.getStack().toIotaList(), event.getRavenmind(), sideEffects);
+        return new OperationResult(spellContinuation, event.getStack(), event.getRavenmind(), sideEffects);
     }
 }

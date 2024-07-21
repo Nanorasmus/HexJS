@@ -4,7 +4,7 @@ plugins {
 }
 loom {
     forge {
-        mixinConfig "hex_circus.mixins.json"
+        mixinConfig "hex_js.mixins.json"
     }
 }
 architectury {

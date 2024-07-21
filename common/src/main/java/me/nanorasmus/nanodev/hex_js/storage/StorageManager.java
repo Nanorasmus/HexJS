@@ -1,17 +1,15 @@
 package me.nanorasmus.nanodev.hex_js.storage;
 
 
-import at.petrak.hexcasting.api.spell.iota.Iota;
 import me.nanorasmus.nanodev.hex_js.HexJS;
+import me.nanorasmus.nanodev.hex_js.kubejs.customPatterns.CustomPatternHolder;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.PersistentState;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 public class StorageManager extends PersistentState {
     public static final String saveId = HexJS.MOD_ID + ".save";
@@ -30,22 +28,37 @@ public class StorageManager extends PersistentState {
         INSTANCE = server.getOverworld().getPersistentStateManager().getOrCreate(StorageManager::createFromNbt, StorageManager::new, saveId);
     }
 
-    public static PatternList getDefaultPatternList() { return defaultPatternList.copy(); }
-    public static void setDefaultPatternList(PatternList override) { defaultPatternList = override; }
-    public static void addToDefaultPatternList(ArrayList<String> additions) {
+    public static PatternList getGlobalPatternList() { return defaultPatternList.copy(); }
+    public static void setGlobalPatternList(PatternList override) { defaultPatternList = override; }
+    public static void addToGlobalPatternList(ArrayList<String> additions) {
         defaultPatternList.angleSignatureList.addAll(additions);
     }
-
-    public static boolean getDefaultIsWhitelist() { return defaultPatternList.isWhitelist; }
-    public static void setDefaultIsWhitelist(boolean isWhitelist) { defaultPatternList.isWhitelist = isWhitelist; }
-
-    public static void addDefaultRedirect(String input, String output) {
-        defaultPatternList.addRedirect(input, output);
+    public static void removeFromGlobalPatternList(String toRemove) {
+        defaultPatternList.angleSignatureList.remove(toRemove);
     }
 
+    public static boolean getGlobalIsWhitelist() { return defaultPatternList.isWhitelist; }
+    public static void setGlobalIsWhitelist(boolean isWhitelist) { defaultPatternList.isWhitelist = isWhitelist; }
+
+    public static void clearGlobalList() {
+        defaultPatternList.angleSignatureList = null;
+    }
+
+    public static void addGlobalRedirect(String input, String output) {
+        defaultPatternList.addRedirect(input, output);
+    }
+    public static HashMap<String, String> getGlobalRedirects() {
+        return defaultPatternList.redirectListRaw;
+    }
+    public static void setGlobalRedirects(HashMap<String, String> redirects) {
+        defaultPatternList.setRedirects(redirects);
+    }
+    public static void clearGlobalRedirects() {
+        defaultPatternList.clearRedirects();
+    }
 
     public static PatternList getPatternList(UUID playerUUID) {
-        return playerPatternList.getOrDefault(playerUUID, getDefaultPatternList());
+        return playerPatternList.getOrDefault(playerUUID, new PatternList());
     }
 
     public static void setPlayerPatternList(UUID playerUUID, PatternList playerPatterns) {
@@ -56,6 +69,22 @@ public class StorageManager extends PersistentState {
         PatternList playerPatterns = getPatternList(playerUUID);
 
         playerPatterns.angleSignatureList.addAll(additions);
+
+        setPlayerPatternList(playerUUID, playerPatterns);
+    }
+
+    public static void removeFromPlayerPatternList(UUID playerUUID, String toRemove) {
+        PatternList playerPatterns = getPatternList(playerUUID);
+
+        playerPatterns.angleSignatureList.remove(toRemove);
+
+        setPlayerPatternList(playerUUID, playerPatterns);
+    }
+
+    public static void clearPlayerPatternList(UUID playerUUID) {
+        PatternList playerPatterns = getPatternList(playerUUID);
+
+        playerPatterns.angleSignatureList.clear();
 
         setPlayerPatternList(playerUUID, playerPatterns);
     }
@@ -71,6 +100,20 @@ public class StorageManager extends PersistentState {
 
     public static HashMap<String, String> getPlayerRedirects(UUID playerUUID) {
         return getPatternList(playerUUID).redirectListRaw;
+    }
+    public static void setPlayerRedirects(UUID playerUUID, HashMap<String, String> redirects) {
+        PatternList playerPatterns = getPatternList(playerUUID);
+
+        playerPatterns.setRedirects(redirects);
+
+        setPlayerPatternList(playerUUID, playerPatterns);
+    }
+    public static void clearPlayerRedirects(UUID playerUUID) {
+        PatternList playerPatterns = getPatternList(playerUUID);
+
+        playerPatterns.clearRedirects();
+
+        setPlayerPatternList(playerUUID, playerPatterns);
     }
 
     public static void addPlayerRedirect(UUID playerUUID, String input, String output) {

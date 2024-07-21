@@ -2,11 +2,12 @@ package me.nanorasmus.nanodev.hex_js.storage;
 
 import at.petrak.hexcasting.api.spell.math.HexAngle;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
-import at.petrak.hexcasting.api.utils.HexUtils;
-import me.nanorasmus.nanodev.hex_js.helpers.PatternHelper;
+import me.nanorasmus.nanodev.hex_js.helpers.IotaHelper;
+import me.nanorasmus.nanodev.hex_js.kubejs.customPatterns.CustomPatternHolder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class PatternList {
     boolean isWhitelist = false;
@@ -35,10 +36,26 @@ public class PatternList {
         }
     }
 
+    public void clearRedirects() {
+        redirectList = new HashMap<>();
+        redirectListRaw = new HashMap<>();
+    }
+
     public void addRedirect(String input, String output) {
-        ArrayList<HexAngle> angles = PatternHelper.anglesFromString(output);
+        ArrayList<HexAngle> angles = IotaHelper.anglesFromString(output);
         redirectList.put(input, angles);
         redirectListRaw.put(input, output);
+    }
+
+    public void setRedirects(HashMap<String, String> redirects) {
+        clearRedirects();
+        for (String input : redirects.keySet()) {
+            String output = redirects.get(input);
+
+            ArrayList<HexAngle> angles = IotaHelper.anglesFromString(output);
+            redirectList.put(input, angles);
+            redirectListRaw.put(input, output);
+        }
     }
 
     public PatternList copy() {
@@ -63,6 +80,6 @@ public class PatternList {
         if (redirectList.containsKey(pattern.anglesSignature())) {
             return new HexPattern(pattern.getStartDir(), redirectList.get(pattern.anglesSignature()));
         }
-        return pattern;
+        return null;
     }
 }

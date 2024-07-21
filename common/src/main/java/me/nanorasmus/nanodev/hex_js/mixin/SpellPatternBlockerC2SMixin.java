@@ -24,12 +24,19 @@ public class SpellPatternBlockerC2SMixin {
     @Inject(method = "handle", at = @At("HEAD"), cancellable = true)
     public void handle(MinecraftServer server, ServerPlayerEntity sender, CallbackInfo ci) {
         PatternList playerPatternList = StorageManager.getPatternList(sender.getUuid());
+        PatternList globalPatternList = StorageManager.getGlobalPatternList();
         // If it is blocked by HexJS
-        if (playerPatternList.blocks(pattern)) {
+        if (playerPatternList.blocks(pattern) || globalPatternList.blocks(pattern)) {
             // Cancel the event
             sender.sendMessage(Text.of("A strange force is prohibiting me from forming this pattern clearly"));
             ci.cancel();
         }
-        pattern = playerPatternList.handleRedirects(pattern);
+        HexPattern playerRedirect = playerPatternList.handleRedirects(pattern);
+        HexPattern globalRedirect = globalPatternList.handleRedirects(pattern);
+        if (playerRedirect != null) {
+            pattern = playerRedirect;
+        } else if (globalRedirect != null) {
+            pattern = globalRedirect;
+        }
     }
 }
