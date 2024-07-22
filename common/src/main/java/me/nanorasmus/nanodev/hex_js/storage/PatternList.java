@@ -3,11 +3,9 @@ package me.nanorasmus.nanodev.hex_js.storage;
 import at.petrak.hexcasting.api.spell.math.HexAngle;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
 import me.nanorasmus.nanodev.hex_js.helpers.IotaHelper;
-import me.nanorasmus.nanodev.hex_js.kubejs.customPatterns.CustomPatternHolder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.UUID;
 
 public class PatternList {
     boolean isWhitelist = false;

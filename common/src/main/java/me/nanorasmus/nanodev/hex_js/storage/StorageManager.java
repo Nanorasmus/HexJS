@@ -2,7 +2,6 @@ package me.nanorasmus.nanodev.hex_js.storage;
 
 
 import me.nanorasmus.nanodev.hex_js.HexJS;
-import me.nanorasmus.nanodev.hex_js.kubejs.customPatterns.CustomPatternHolder;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.PersistentState;

@@ -14,7 +14,6 @@ import me.nanorasmus.nanodev.hex_js.HexJS;
 import me.nanorasmus.nanodev.hex_js.helpers.IotaHelper;
 import me.nanorasmus.nanodev.hex_js.kubejs.customPatterns.CustomPatternCastedEvent;
 import me.nanorasmus.nanodev.hex_js.kubejs.customPatterns.CustomPatternRegistry;
-import me.nanorasmus.nanodev.hex_js.storage.StorageManager;
 
 public class HexKubeJSPlugin extends KubeJSPlugin {
     public static HexKubeJSPlugin singleton;

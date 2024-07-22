@@ -50,7 +50,7 @@ public class CustomPatternCastedEvent extends EventJS {
         return pattern;
     }
 
-    public void mishap(String mishapMessage) {
+    public void scheduleMishap(String mishapMessage) {
         shouldMishap = true;
         this.mishapMessage = mishapMessage;
     }

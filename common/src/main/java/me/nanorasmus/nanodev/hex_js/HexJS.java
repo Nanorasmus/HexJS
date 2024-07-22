@@ -2,7 +2,6 @@ package me.nanorasmus.nanodev.hex_js;
 
 import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.event.events.common.TickEvent;
-import me.nanorasmus.nanodev.hex_js.kubejs.entityCasting.EntityCasting;
 import me.nanorasmus.nanodev.hex_js.storage.StorageManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
@@ -17,11 +16,8 @@ public class HexJS
 	public static MinecraftServer server;
 
 	public static void init() {
-		LifecycleEvent.SERVER_STARTING.register((MinecraftServer server) -> {
-			StorageManager.load(server);
-			EntityCasting.init(server);
-		});
-		LifecycleEvent.SERVER_STOPPING.register((MinecraftServer server) -> StorageManager.save(server));
+		LifecycleEvent.SERVER_STARTING.register(StorageManager::load);
+		LifecycleEvent.SERVER_STOPPING.register(StorageManager::save);
 		TickEvent.SERVER_PRE.register((MinecraftServer server) -> HexJS.server = server);
 	}
 

@@ -1,30 +1,25 @@
 package me.nanorasmus.nanodev.hex_js.kubejs;
 
 import at.petrak.hexcasting.api.addldata.ADHexHolder;
-import at.petrak.hexcasting.api.spell.casting.CastingContext;
 import at.petrak.hexcasting.api.spell.casting.CastingHarness;
 import at.petrak.hexcasting.api.spell.casting.ControllerInfo;
 import at.petrak.hexcasting.api.spell.iota.Iota;
-import at.petrak.hexcasting.api.spell.iota.PatternIota;
 import at.petrak.hexcasting.api.spell.math.HexDir;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.common.lib.HexItems;
 import at.petrak.hexcasting.common.network.MsgNewSpellPatternAck;
 import at.petrak.hexcasting.xplat.IXplatAbstractions;
-import dev.latvian.mods.kubejs.core.ServerLevelKJS;
+import dev.latvian.mods.kubejs.typings.Info;
+import dev.latvian.mods.kubejs.typings.Param;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import me.nanorasmus.nanodev.hex_js.HexJS;
 import me.nanorasmus.nanodev.hex_js.helpers.IotaHelper;
 import me.nanorasmus.nanodev.hex_js.kubejs.customPatterns.CustomPatternHolder;
 import me.nanorasmus.nanodev.hex_js.kubejs.customPatterns.CustomPatternRegistry;
 import me.nanorasmus.nanodev.hex_js.storage.StorageManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
 
 import java.util.*;
