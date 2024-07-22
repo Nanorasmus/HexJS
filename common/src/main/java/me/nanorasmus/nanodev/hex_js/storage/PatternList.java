@@ -68,6 +68,17 @@ public class PatternList {
         );
     }
 
+    public boolean contains(HexPattern pattern) {
+        boolean contains = false;
+        for (String angleSignature : angleSignatureList) {
+            if (angleSignature.equals(pattern.anglesSignature())) {
+                contains = true;
+                break;
+            }
+        }
+        return contains;
+    }
+
     public boolean blocks(HexPattern pattern) {
         boolean isBlocked = isWhitelist;
         for (String angleSignature : angleSignatureList) {

@@ -26,7 +26,7 @@ public class SpellPatternBlockerC2SMixin {
         PatternList playerPatternList = StorageManager.getPatternList(sender.getUuid());
         PatternList globalPatternList = StorageManager.getGlobalPatternList();
         // If it is blocked by HexJS
-        if (playerPatternList.blocks(pattern) || globalPatternList.blocks(pattern)) {
+        if (playerPatternList.blocks(pattern) || (!playerPatternList.contains(pattern) && globalPatternList.blocks(pattern))) {
             // Cancel the event
             sender.sendMessage(Text.of("A strange force is prohibiting me from forming this pattern clearly"));
             ci.cancel();
