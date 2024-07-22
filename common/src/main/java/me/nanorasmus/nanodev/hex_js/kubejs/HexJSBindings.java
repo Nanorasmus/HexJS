@@ -1,5 +1,6 @@
 package me.nanorasmus.nanodev.hex_js.kubejs;
 
+import at.petrak.hexcasting.api.PatternRegistry;
 import at.petrak.hexcasting.api.addldata.ADHexHolder;
 import at.petrak.hexcasting.api.spell.casting.CastingHarness;
 import at.petrak.hexcasting.api.spell.casting.ControllerInfo;
@@ -10,6 +11,7 @@ import at.petrak.hexcasting.common.items.ItemScroll;
 import at.petrak.hexcasting.common.lib.HexItems;
 import at.petrak.hexcasting.common.network.MsgNewSpellPatternAck;
 import at.petrak.hexcasting.xplat.IXplatAbstractions;
+import com.mojang.datafixers.util.Pair;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import dev.latvian.mods.rhino.util.HideFromJS;
@@ -22,14 +24,33 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 
 import java.util.*;
 
 public class HexJSBindings {
 
+    // Get info from Hex
+
+    @Info(
+            value = "Gets the angle signature of a great spell, or an empty string if not found",
+            params = {
+                    @Param(name = "greatSpellID", value = "The resource ID of the great spell")
+            }
+    )
+    public String getGreatSpellAngles(String greatSpellID) {
+        Map<String, Pair<Identifier, HexDir>> perWorldPatterns = PatternRegistry.getPerWorldPatterns(HexJS.server.getOverworld());
+
+        for (String angles : perWorldPatterns.keySet()) {
+            if (greatSpellID.equals(perWorldPatterns.get(angles).getFirst().toString())) return angles;
+        }
+
+        return "";
+    }
+
+    // Custom Patterns
     @Info(
             value = "Registers a custom pattern for handling in HexcastingEvents.registeredPatternCastedEvent()",
             params = {
