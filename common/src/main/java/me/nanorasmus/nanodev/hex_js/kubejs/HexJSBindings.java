@@ -363,85 +363,98 @@ public class HexJSBindings {
 
     // -- Per-player --
 
-    /**
-     * Sets whether the pattern list of a player is a blacklist or a whitelist.
-     * Takes in a UUID and a boolean.
-     * False = Blacklist, True = Whitelist
-     * IS PERSISTENT ACROSS RESTARTS
-     */
+    @Info(
+            value = "Sets whether the pattern list of a player is a blacklist or a whitelist. IS PERSISTENT ACROSS RESTARTS",
+            params = {
+                    @Param(name = "playerUUID", value = "The UUID of the player in question"),
+                    @Param(name = "isWhitelist", value = "The desired list type. False = Blacklist, True = Whitelist.")
+            }
+    )
     public void setPlayerPatternListType(UUID playerUUID, boolean isWhitelist) {
         StorageManager.setIsPlayerPatternsWhitelist(playerUUID, isWhitelist);
     }
 
-    /**
-     * Gets whether the pattern list of a player is a blacklist or a whitelist.
-     * Takes in a UUID and a boolean.
-     * False = Blacklist, True = Whitelist
-     */
+    @Info(
+            value = "Gets whether the pattern list of a player is a blacklist or a whitelist. False = Blacklist, True = Whitelist",
+            params = {
+                    @Param(name = "playerUUID", value = "The UUID of the player in question")
+            }
+    )
     public boolean getPlayerPatternListType(UUID playerUUID) {
         return StorageManager.getIsPlayerPatternsWhitelist(playerUUID);
     }
 
-    /**
-     * Adds a pattern to the blacklist/whitelist of the specified player.
-     * Takes in a UUID and a string consisting of angles of the pattern to add, as an example "qaq" is mind's reflection.
-     * IS PERSISTENT ACROSS RESTARTS
-     */
+    @Info(
+            value = "Adds a pattern to the blacklist/whitelist of the specified player. IS PERSISTENT ACROSS RESTARTS",
+            params = {
+                    @Param(name = "playerUUID", value = "The UUID of the player in question"),
+                    @Param(name = "patternAngles", value = "A string consisting of angles of the pattern to add, as an example \"qaq\" is mind's reflection")
+            }
+    )
     public void addPatternToPlayer(UUID playerUUID, String patternAngles) {
         StorageManager.addToPlayerPatternList(playerUUID, new ArrayList<>(Collections.singletonList(patternAngles)));
     }
 
-    /**
-     * Removes pattern to the blacklist/whitelist of the specified player.
-     * Takes in a UUID and a string consisting of angles of the pattern to remove, as an example "qaq" is mind's reflection.
-     * IS PERSISTENT ACROSS RESTARTS
-     */
+    @Info(
+            value = "Removes a pattern to the blacklist/whitelist of the specified player. IS PERSISTENT ACROSS RESTARTS",
+            params = {
+                    @Param(name = "playerUUID", value = "The UUID of the player in question"),
+                    @Param(name = "patternAngles", value = "A string consisting of angles of the pattern to remove, as an example \"qaq\" is mind's reflection")
+            }
+    )
     public void removePatternFromPlayer(UUID playerUUID, String patternAngles) {
         StorageManager.removeFromPlayerPatternList(playerUUID, patternAngles);
     }
 
-    /**
-     * Clears the blacklist/whitelist of a player.
-     * IS PERSISTENT ACROSS RESTARTS
-     * @param playerUUID The UUID of the player in question
-     */
+    @Info(
+            value = "Clears the blacklist/whitelist of a player. IS PERSISTENT ACROSS RESTARTS",
+            params = {
+                    @Param(name = "playerUUID", value = "The UUID of the player in question")
+            }
+    )
     public void clearPlayerList(UUID playerUUID) {
         StorageManager.clearPlayerPatternList(playerUUID);
     }
 
-    /**
-     * Adds a redirect to specified player.
-     * Takes in a UUID and 2 strings consisting of angles of the pattern to redirect from and to, as an example "qaq" is mind's reflection.
-     * IS PERSISTENT ACROSS RESTARTS
-     */
+    @Info(
+            value = "Adds a redirect to specified player. IS PERSISTENT ACROSS RESTARTS",
+            params = {
+                    @Param(name = "playerUUID", value = "The UUID of the player in question"),
+                    @Param(name = "fromPatternAngles", value = "A string consisting of angles of the pattern to redirect from, as an example \"qaq\" is mind's reflection"),
+                    @Param(name = "toPatternAngles", value = "A string consisting of angles of the pattern to redirect to, as an example \"qaq\" is mind's reflection")
+            }
+    )
     public void addRedirectToPlayer(UUID playerUUID, String fromPatternAngles, String toPatternAngles) {
         StorageManager.addPlayerRedirect(playerUUID, fromPatternAngles, toPatternAngles);
     }
 
-
-    /**
-     * Gets all redirects of a player in the form of a HashMap(fromPatternAngles, toPatternAngles).
-     * @param playerUUID The UUID of the player in question
-     */
+    @Info(
+            value = "Gets all redirects of a player in the form of a HashMap(fromPatternAngles, toPatternAngles)",
+            params = {
+                    @Param(name = "playerUUID", value = "The UUID of the player in question")
+            }
+    )
     public HashMap<String, String> getPlayerRedirects(UUID playerUUID) {
         return StorageManager.getPlayerRedirects(playerUUID);
     }
 
-    /**
-     * Overrides all current redirects of a player with a new set of redirects.
-     * IS PERSISTENT ACROSS RESTARTS
-     * @param playerUUID The UUID of the player in question
-     * @param redirects The new set of redirects to apply to the player
-     */
+    @Info(
+            value = "Sets all redirects of a player. IS PERSISTENT ACROSS RESTARTS",
+            params = {
+                    @Param(name = "playerUUID", value = "The UUID of the player in question"),
+                    @Param(name = "redirects", value = "The new redirects in the form of a Hashmap(fromPatternAngles, toPatternAngles)")
+            }
+    )
     public void setPlayerRedirects(UUID playerUUID, HashMap<String, String> redirects) {
         StorageManager.setPlayerRedirects(playerUUID, redirects);
     }
 
-    /**
-     * Clears all current redirects of a player.
-     * IS PERSISTENT ACROSS RESTARTS
-     * @param playerUUID The UUID of the player in question
-     */
+    @Info(
+            value = "Clears all current redirects of a player. IS PERSISTENT ACROSS RESTARTS",
+            params = {
+                    @Param(name = "playerUUID", value = "The UUID of the player in question")
+            }
+    )
     public void clearPlayerRedirects(UUID playerUUID) {
         StorageManager.clearPlayerRedirects(playerUUID);
     }

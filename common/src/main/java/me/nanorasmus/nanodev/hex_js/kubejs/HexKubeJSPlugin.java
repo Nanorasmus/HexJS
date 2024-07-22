@@ -20,7 +20,7 @@ public class HexKubeJSPlugin extends KubeJSPlugin {
 
     public static EventGroup hexcastingEventGroup = EventGroup.of("HexcastingEvents");
 
-    public static EventHandler patternCastedEventHandler = hexcastingEventGroup.server("registeredPatternCastedEvent", () -> CustomPatternCastedEvent.class).hasResult();
+    public static EventHandler patternCastedEventHandler = hexcastingEventGroup.server("registeredPatternCastEvent", () -> CustomPatternCastedEvent.class).hasResult();
 
     @Override
     public void init() {
@@ -33,7 +33,7 @@ public class HexKubeJSPlugin extends KubeJSPlugin {
         e.add("Hexcasting", new HexJSBindings());
 
         // The event itself
-        e.add("patternCastedEvent", CustomPatternCastedEvent.class);
+        e.add("registeredPatternCastEvent", CustomPatternCastedEvent.class);
 
         // Helpers
         e.add("IotaHelper", IotaHelper.class);
