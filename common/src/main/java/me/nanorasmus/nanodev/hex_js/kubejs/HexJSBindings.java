@@ -260,6 +260,15 @@ public class HexJSBindings {
     public void addGlobalPattern(String patternAngles) {
         StorageManager.addToGlobalPatternList(new ArrayList<>(Collections.singletonList(patternAngles)));
     }
+    @Info(
+            value = "Adds a list of patterns to the global blacklist/whitelist.",
+            params = {
+                    @Param(name = "patterns", value = "The list of the angle signatures of the patterns to add (List<String>)")
+            }
+    )
+    public void addGlobalPatterns(List<String> patterns) {
+        StorageManager.addToGlobalPatternList(new ArrayList<>(patterns));
+    }
 
     @Info(
             value = "Removes a pattern to the global blacklist/whitelist.",
