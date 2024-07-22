@@ -6,6 +6,7 @@ import at.petrak.hexcasting.api.spell.casting.ControllerInfo;
 import at.petrak.hexcasting.api.spell.iota.Iota;
 import at.petrak.hexcasting.api.spell.math.HexDir;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
+import at.petrak.hexcasting.common.items.ItemScroll;
 import at.petrak.hexcasting.common.lib.HexItems;
 import at.petrak.hexcasting.common.network.MsgNewSpellPatternAck;
 import at.petrak.hexcasting.xplat.IXplatAbstractions;
@@ -19,7 +20,10 @@ import me.nanorasmus.nanodev.hex_js.kubejs.customPatterns.CustomPatternRegistry;
 import me.nanorasmus.nanodev.hex_js.storage.StorageManager;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 
 import java.util.*;
@@ -150,6 +154,85 @@ public class HexJSBindings {
     )
     public ItemStack createArtifact(List<String> spell, int media) {
         return imbuePatternsFromAngles(HexItems.ARTIFACT, new ArrayList<>(spell), media);
+    }
+
+    // -- Scrolls --
+
+    @HideFromJS
+    public NbtCompound createScrollTags(String scrollID, HexDir startDir, String patternAngles) {
+        NbtCompound tag = new NbtCompound();
+
+        tag.putString(ItemScroll.TAG_OP_ID, scrollID);
+        tag.put(ItemScroll.TAG_PATTERN, new HexPattern(startDir, IotaHelper.anglesFromString(patternAngles)).serializeToNBT());
+
+        return tag;
+    }
+
+    @Info(
+            value = "Creates a small scroll pre-imbued with the specified pattern",
+            params = {
+                    @Param(name = "scrollName", value = "The desired name of the final scroll"),
+                    @Param(name = "startDir", value = "The direction of the starting stroke of the pattern"),
+                    @Param(name = "patternAngles", value = "The angle signature of the pattern to imbue")
+            }
+    )
+    public ItemStack createSmallScroll(String scrollName, HexDir startDir, String patternAngles) {
+        ItemStack scroll = new ItemStack(HexItems.SCROLL_SMOL);
+        
+        scroll.setNbt(createScrollTags(scrollName, startDir, patternAngles));
+        scroll.setCustomName(Text.of(scrollName));
+
+        return scroll;
+    }
+
+    @Info(
+            value = "Creates a medium scroll pre-imbued with the specified pattern",
+            params = {
+                    @Param(name = "scrollName", value = "The desired name of the final scroll"),
+                    @Param(name = "startDir", value = "The direction of the starting stroke of the pattern"),
+                    @Param(name = "patternAngles", value = "The angle signature of the pattern to imbue")
+            }
+    )
+    public ItemStack createMediumScroll(String scrollName, HexDir startDir, String patternAngles) {
+        ItemStack scroll = new ItemStack(HexItems.SCROLL_MEDIUM);
+        
+        scroll.setNbt(createScrollTags(scrollName, startDir, patternAngles));
+        scroll.setCustomName(Text.of(scrollName));
+
+        return scroll;
+    }
+
+    @Info(
+            value = "Creates a large scroll pre-imbued with the specified pattern",
+            params = {
+                    @Param(name = "scrollName", value = "The desired name of the final scroll"),
+                    @Param(name = "startDir", value = "The direction of the starting stroke of the pattern"),
+                    @Param(name = "patternAngles", value = "The angle signature of the pattern to imbue")
+            }
+    )
+    public ItemStack createLargeScroll(String scrollName, HexDir startDir, String patternAngles) {
+        ItemStack scroll = new ItemStack(HexItems.SCROLL_LARGE);
+
+        scroll.setNbt(createScrollTags(scrollName, startDir, patternAngles));
+        scroll.setCustomName(Text.of(scrollName));
+
+        return scroll;
+    }
+
+    @Info(
+            value = "Creates an ancient scroll pre-imbued with the specified pattern",
+            params = {
+                    @Param(name = "scrollID", value = "The registered language entry ID of the pattern name under the 'hexcasting.spell.minecraft:' category"),
+                    @Param(name = "startDir", value = "The direction of the starting stroke of the pattern"),
+                    @Param(name = "patternAngles", value = "The angle signature of the pattern to imbue")
+            }
+    )
+    public ItemStack createAncientScroll(String scrollID, HexDir startDir, String patternAngles) {
+        ItemStack scroll = new ItemStack(HexItems.SCROLL_LARGE)
+                ;
+        scroll.setNbt(createScrollTags(scrollID, startDir, patternAngles));
+
+        return scroll;
     }
 
     // -- Global --

@@ -38,6 +38,10 @@ public class IotaHelper {
         return angles;
     }
 
+    public static HexPattern patternFromString(String angles) {
+        return new HexPattern(HexDir.EAST, anglesFromString(angles));
+    }
+
     public static PatternIota patternIotaFromString(String angles) {
         return new PatternIota(new HexPattern(
                     HexDir.EAST,
