@@ -26,6 +26,15 @@ import java.util.*;
 
 public class HexJSBindings {
 
+    @Info(
+            value = "Registers a custom pattern for handling in HexcastingEvents.registeredPatternCastedEvent()",
+            params = {
+                    @Param(name = "name", value = "The name of the pattern, can include any characters (String)"),
+                    @Param(name = "angles", value = "The angle signature of the pattern to unregister (String)"),
+                    @Param(name = "isGreatSpell", value = "Whether the spell is blocked for un-enlightened casters (Boolean)"),
+                    @Param(name = "causesBlindDiversion", value = "Whether attempting to cast the spell triggers blind diversion (Boolean)")
+            }
+    )
     public void registerCustomPattern(String name, String angles, boolean isGreatSpell, boolean causesBlindDiversion) {
         CustomPatternRegistry.registry.put(angles, new CustomPatternHolder(
                 name,
@@ -35,21 +44,30 @@ public class HexJSBindings {
         ));
     }
 
+    @Info(
+            value = "Unregisters a custom pattern",
+            params = {
+                    @Param(name = "angles", value = "The angle signature of the pattern to unregister (String)")
+            }
+    )
     public void unregisterCustomPattern(String angles) {
         CustomPatternRegistry.registry.remove(angles);
     }
 
+    @Info("Unregisters all custom patterns")
     public void clearCustomPatterns() {
         CustomPatternRegistry.registry.clear();
     }
 
     // -- Player Force Casting --
 
-    /**
-     * Forces a player to cast a series of patterns, this will act as if they cast the patterns themselves
-     * @param player The player in question
-     * @param patterns The patterns to cast
-     */
+    @Info(
+            value = "Forces a player to cast a series of patterns, this will act as if they cast the patterns themselves",
+            params = {
+                    @Param(name = "player", value = "The player in question (Entity)"),
+                    @Param(name = "patterns", value = "The patterns to cast (List of Strings)")
+            }
+    )
     public void forceCastPlayerEntity(ServerPlayerEntity player, List<String> patterns) {
         CastingHarness harness = IXplatAbstractions.INSTANCE.getHarness(player, Hand.MAIN_HAND);
 
@@ -66,20 +84,24 @@ public class HexJSBindings {
         IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, new MsgNewSpellPatternAck(clientInfo, 0));
     }
 
-    /**
-     * Forces a player to cast a series of patterns, this will act as if they cast the patterns themselves
-     * @param uuid the uuid of the player in question
-     * @param patterns The patterns to cast
-     */
+    @Info(
+            value = "Forces a player to cast a series of patterns, this will act as if they cast the patterns themselves",
+            params = {
+                    @Param(name = "uuid", value = "the uuid of the player in question (UUID)"),
+                    @Param(name = "patterns", value = "The patterns to cast (List of Strings)")
+            }
+    )
     public void forceCastPlayerUUID(UUID uuid, List<String> patterns) {
         forceCastPlayerEntity(HexJS.server.getPlayerManager().getPlayer(uuid), patterns);
     }
 
-    /**
-     * Forces a player to cast a series of patterns, this will act as if they cast the patterns themselves
-     * @param name the name of the player in question (Not display name)
-     * @param patterns The patterns to cast
-     */
+    @Info(
+            value = "Forces a player to cast a series of patterns, this will act as if they cast the patterns themselves",
+            params = {
+                    @Param(name = "name", value = "the name of the player in question, this is not the DisplayName (String)"),
+                    @Param(name = "patterns", value = "The patterns to cast (List of Strings)")
+            }
+    )
     public void forceCastPlayerName(String name, List<String> patterns) {
         forceCastPlayerEntity(HexJS.server.getPlayerManager().getPlayer(name), patterns);
     }
@@ -97,105 +119,110 @@ public class HexJSBindings {
         return baseStack;
     }
 
-    /**
-     * Creates a new cypher
-     * @param patternAngles A list of strings representing the patterns of the spell
-     * @param media the amount of media to put in the spell (in units of 1/10,000 of a default dust)
-     * @return A new cypher in the form of an ItemStack
-     */
-    public ItemStack createCypher(List<String> patternAngles, int media) {
-        return imbuePatternsFromAngles(HexItems.CYPHER, new ArrayList<>(patternAngles), media);
+    @Info(
+            value = "Creates a cypher pre-imbued with the specified spell and media",
+            params = {
+                    @Param(name = "spell", value = "A list of strings representing the patterns of the spell (List of Strings)"),
+                    @Param(name = "media", value = "the amount of media to put in the cypher, in units of 1/10,000 of a default dust (int)")
+            }
+    )
+    public ItemStack createCypher(List<String> spell, int media) {
+        return imbuePatternsFromAngles(HexItems.CYPHER, new ArrayList<>(spell), media);
     }
 
-    /**
-     * Creates a new trinket
-     * @param patternAngles A list of strings representing the patterns of the spell
-     * @param media the amount of media to put in the spell (in units of 1/10,000 of a default dust)
-     * @return A new trinket in the form of an ItemStack
-     */
-    public ItemStack createTrinket(List<String> patternAngles, int media) {
-        return imbuePatternsFromAngles(HexItems.TRINKET, new ArrayList<>(patternAngles), media);
+    @Info(
+            value = "Creates a trinket pre-imbued with the specified spell and media",
+            params = {
+                    @Param(name = "spell", value = "A list of strings representing the patterns of the spell (List of Strings)"),
+                    @Param(name = "media", value = "the amount of media to put in the trinket, in units of 1/10,000 of a default dust (int)")
+            }
+    )
+    public ItemStack createTrinket(List<String> spell, int media) {
+        return imbuePatternsFromAngles(HexItems.TRINKET, new ArrayList<>(spell), media);
     }
 
-    /**
-     * Creates a new artifact
-     * @param patternAngles A list of strings representing the patterns of the spell
-     * @param media the amount of media to put in the spell (in units of 1/10,000 of a default dust)
-     * @return A new artifact in the form of an ItemStack
-     */
-    public ItemStack createArtifact(List<String> patternAngles, int media) {
-        return imbuePatternsFromAngles(HexItems.ARTIFACT, new ArrayList<>(patternAngles), media);
+    @Info(
+            value = "Creates an artifact pre-imbued with the specified spell and media",
+            params = {
+                    @Param(name = "spell", value = "A list of strings representing the patterns of the spell (List of Strings)"),
+                    @Param(name = "media", value = "the amount of media to put in the artifact, in units of 1/10,000 of a default dust (int)")
+            }
+    )
+    public ItemStack createArtifact(List<String> spell, int media) {
+        return imbuePatternsFromAngles(HexItems.ARTIFACT, new ArrayList<>(spell), media);
     }
 
     // -- Global --
 
-    /**
-     * Gets whether the global pattern list is a blacklist or whitelist.
-     * False = Blacklist, True = Whitelist
-     */
+    @Info("Gets whether the global pattern list is a blacklist or whitelist. False = Blacklist, True = Whitelist")
     public boolean getGlobalPatternListType() {
         return StorageManager.getGlobalIsWhitelist();
     }
-
-    /**
-     * Sets whether the global pattern list is a blacklist or whitelist.
-     * Takes in a boolean.
-     * False = Blacklist, True = Whitelist
-     */
+    @Info(
+            value = "Sets the list type of the global list",
+            params = {
+                    @Param(name = "isWhitelist", value = "Should the global list be a whitelist? (Boolean)")
+            }
+    )
     public void setGlobalPatternListType(boolean isWhitelist) {
         StorageManager.setGlobalIsWhitelist(isWhitelist);
     }
 
-    /**
-     * Adds a pattern to the global blacklist/whitelist.
-     * Takes in a string consisting of angles of the pattern to add, as an example "qaq" is mind's reflection.
-     */
+    @Info(
+            value = "Adds a pattern to the global blacklist/whitelist.",
+            params = {
+                    @Param(name = "patternAngles", value = "The angle signature of the pattern to add (String)")
+            }
+    )
     public void addGlobalPattern(String patternAngles) {
         StorageManager.addToGlobalPatternList(new ArrayList<>(Collections.singletonList(patternAngles)));
     }
 
-    /**
-     * Remove a pattern to the global blacklist/whitelist.
-     * Takes in a string consisting of angles of the pattern to remove, as an example "qaq" is mind's reflection.
-     */
+    @Info(
+            value = "Removes a pattern to the global blacklist/whitelist.",
+            params = {
+                    @Param(name = "patternAngles", value = "The angle signature of the pattern to remove (String)")
+            }
+    )
     public void removeGlobalPattern(String patternAngles) {
         StorageManager.removeFromGlobalPatternList(patternAngles);
     }
 
-    /**
-     * Clears the global blacklist/whitelist.
-     */
+    @Info("Clears the global blacklist/whitelist.")
     public void clearGlobalList() {
         StorageManager.clearGlobalList();
     }
 
-    /**
-     * Adds a global redirect
-     * Takes in 2 strings consisting of angles of the pattern to redirect from and to, as an example "qaq" is mind's reflection.
-     */
+
+    @Info(
+            value = "Adds a global redirect",
+            params = {
+                    @Param(name = "fromPatternAngles", value = "The angle signature of the pattern to redirect from (String)"),
+                    @Param(name = "toPatternAngles", value = "The angle signature of the pattern to redirect to (String)")
+            }
+    )
     public void addGlobalRedirect(String fromPatternAngles, String toPatternAngles) {
         StorageManager.addGlobalRedirect(fromPatternAngles, toPatternAngles);
     }
 
 
-    /**
-     * Gets all global redirects in the form of a HashMap(fromPatternAngles, toPatternAngles).
-     */
+    @Info("Gets all global redirects in the form of a Hashmap<fromPatternAngles: String, toPatternAngles: String>.")
     public HashMap<String, String> getGlobalRedirects() {
         return StorageManager.getGlobalRedirects();
     }
 
-    /**
-     * Overrides all global redirects with a new set of redirects.
-     * @param redirects The new set of redirects to apply to the player
-     */
+
+    @Info(
+            value = "Overrides all global redirects with a new set of redirects.",
+            params = {
+                    @Param(name = "redirects", value = "The new set of redirects to apply (Hashmap<fromPatternAngles: String, toPatternAngles: String>)")
+            }
+    )
     public void setGlobalRedirects(HashMap<String, String> redirects) {
         StorageManager.setGlobalRedirects(redirects);
     }
 
-    /**
-     * Clears all global redirects
-     */
+    @Info("Clears all global redirects")
     public void clearGlobalRedirects() {
         StorageManager.clearGlobalRedirects();
     }
