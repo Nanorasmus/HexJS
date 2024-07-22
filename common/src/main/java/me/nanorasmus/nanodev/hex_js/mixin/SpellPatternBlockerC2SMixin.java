@@ -27,11 +27,35 @@ public class SpellPatternBlockerC2SMixin {
 
     @Inject(method = "handle", at = @At("HEAD"), cancellable = true)
     public void handle(MinecraftServer server, ServerPlayerEntity sender, CallbackInfo ci) {
+        PatternList playerPatternList = StorageManager.getPatternList(sender.getUuid());
+        PatternList globalPatternList = StorageManager.getGlobalPatternList();
+
         String signature = pattern.anglesSignature();
-        // Ignore number literals
-        if (!(signature.startsWith("aqaa") || signature.startsWith("dedd"))) {
-            // Ignore Bookkeeper's Gambit
+
+        // Handle number literals
+        if (signature.startsWith("aqaa")) {
+            // If the base positive number literal is blocked by HexJS
+            if (
+                    playerPatternList.blocks("aqaa") || (!playerPatternList.contains("aqaa") && globalPatternList.blocks("aqaa"))
+            ) {
+                // Cancel the event
+                sender.sendMessage(Text.of("A strange force is prohibiting me from forming this pattern"));
+                ci.cancel();
+            }
+        } else if (signature.startsWith("dedd")) {
+            // If the base negative number literal is blocked by HexJS
+            if (
+                    playerPatternList.blocks("dedd") || (!playerPatternList.contains("dedd") && globalPatternList.blocks("dedd"))
+            ) {
+                // Cancel the event
+                sender.sendMessage(Text.of("A strange force is prohibiting me from forming this pattern"));
+                ci.cancel();
+            }
+        } else {
+
+            // Handle Bookkeeper's Gambit
             boolean isBookKeepers = true;
+            int bookKeeperLength = 0;
 
             ArrayList<HexDir> directions = new ArrayList<>(pattern.directions());
             HexDir flatDir = pattern.getStartDir();
@@ -43,6 +67,7 @@ public class SpellPatternBlockerC2SMixin {
                 // Angle with respect to the *start direction*
                 var angle = directions.get(i).angleFrom(flatDir);
                 if (angle == HexAngle.FORWARD) {
+                    bookKeeperLength++;
                     continue;
                 }
                 if (i >= directions.size() - 1) {
@@ -52,6 +77,7 @@ public class SpellPatternBlockerC2SMixin {
                 }
                 var angle2 = directions.get(i + 1).angleFrom(flatDir);
                 if (angle == HexAngle.RIGHT && angle2 == HexAngle.LEFT) {
+                    bookKeeperLength++;
                     i++;
                     continue;
                 }
@@ -60,13 +86,24 @@ public class SpellPatternBlockerC2SMixin {
                 break;
             }
 
-            if (!isBookKeepers) {
-                PatternList playerPatternList = StorageManager.getPatternList(sender.getUuid());
-                PatternList globalPatternList = StorageManager.getGlobalPatternList();
+            if (isBookKeepers) {
+                // Check if a set bookkeeper's length is prohibiting the cast, per-player length having priority
+                if (
+                        (playerPatternList.maxBookKeepersLength != -1 && playerPatternList.maxBookKeepersLength < bookKeeperLength)
+                        || (playerPatternList.maxBookKeepersLength == -1 && globalPatternList.maxBookKeepersLength != -1 && globalPatternList.maxBookKeepersLength < bookKeeperLength)
+                ) {
+                    // Cancel the event
+                    sender.sendMessage(Text.of("A strange force is prohibiting me from forming a Bookkeeper's Gambit this long"));
+                    ci.cancel();
+                }
+            } else {
+
+                // -- Normal pattern logic --
+
                 // If it is blocked by HexJS
                 if (playerPatternList.blocks(pattern) || (!playerPatternList.contains(pattern) && globalPatternList.blocks(pattern))) {
                     // Cancel the event
-                    sender.sendMessage(Text.of("A strange force is prohibiting me from forming this pattern clearly"));
+                    sender.sendMessage(Text.of("A strange force is prohibiting me from forming this pattern"));
                     ci.cancel();
                 }
                 HexPattern playerRedirect = playerPatternList.handleRedirects(pattern);

@@ -340,6 +340,26 @@ public class HexJSBindings {
         StorageManager.clearGlobalRedirects();
     }
 
+    @Info(
+            value = "Sets the global maximum iota length of a Bookkeeper's Gambit",
+            params = {
+                    @Param(name = "newLength", value = "The desired maximum length of Bookkeeper's Gambit")
+            }
+    )
+    public void setGlobalMaxBookkeeperLength(int newLength) {
+        StorageManager.defaultPatternList.maxBookKeepersLength = newLength;
+    }
+
+    @Info("Gets the global maximum iota length of a Bookkeeper's Gambit")
+    public int getGlobalMaxBookkeeperLength() {
+        return StorageManager.defaultPatternList.maxBookKeepersLength;
+    }
+
+    @Info("Clears the global maximum iota length of a Bookkeeper's Gambit")
+    public void clearGlobalMaxBookkeeperLength() {
+        StorageManager.defaultPatternList.maxBookKeepersLength = -1;
+    }
+
 
     // -- Per-player --
 
@@ -424,6 +444,26 @@ public class HexJSBindings {
      */
     public void clearPlayerRedirects(UUID playerUUID) {
         StorageManager.clearPlayerRedirects(playerUUID);
+    }
+
+    @Info(
+            value = "Sets a player's maximum iota length of a Bookkeeper's Gambit",
+            params = {
+                    @Param(name = "newLength", value = "The desired maximum length of Bookkeeper's Gambit")
+            }
+    )
+    public void setPlayerMaxBookkeeperLength(UUID playerUUID, int newLength) {
+        StorageManager.setPlayerMaxBookkeeperLength(playerUUID, newLength);
+    }
+
+    @Info("Gets a player's maximum iota length of a Bookkeeper's Gambit")
+    public int getPlayerMaxBookkeeperLength(UUID playerUUID) {
+        return StorageManager.getPlayerMaxBookkeeperLength(playerUUID);
+    }
+
+    @Info("Clears a player's maximum iota length of a Bookkeeper's Gambit")
+    public void clearPlayerMaxBookkeeperLength(UUID playerUUID) {
+        StorageManager.clearPlayerMaxBookkeeperLength(playerUUID);
     }
 
 }

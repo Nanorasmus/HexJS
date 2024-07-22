@@ -1,6 +1,8 @@
 package me.nanorasmus.nanodev.hex_js.storage;
 
 
+import dev.latvian.mods.kubejs.typings.Info;
+import dev.latvian.mods.kubejs.typings.Param;
 import me.nanorasmus.nanodev.hex_js.HexJS;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
@@ -123,6 +125,28 @@ public class StorageManager extends PersistentState {
         setPlayerPatternList(playerUUID, playerPatterns);
     }
 
+    public static void setPlayerMaxBookkeeperLength(UUID playerUUID, int newLength) {
+        PatternList playerPatterns = getPatternList(playerUUID);
+
+        playerPatterns.maxBookKeepersLength = newLength;
+
+        setPlayerPatternList(playerUUID, playerPatterns);
+    }
+
+    public static int getPlayerMaxBookkeeperLength(UUID playerUUID) {
+        PatternList playerPatterns = getPatternList(playerUUID);
+
+        return playerPatterns.maxBookKeepersLength;
+    }
+
+    public static void clearPlayerMaxBookkeeperLength(UUID playerUUID) {
+        PatternList playerPatterns = getPatternList(playerUUID);
+
+        playerPatterns.maxBookKeepersLength = -1;
+
+        setPlayerPatternList(playerUUID, playerPatterns);
+    }
+
     static void load(NbtCompound nbt) {
         for (int i = 0; i < nbt.getInt("saved_player_count"); i++) {
             // Get the saved patterns
@@ -138,6 +162,9 @@ public class StorageManager extends PersistentState {
                         nbt.getString("player_"+i+"_redirect_"+x+"_output")
                 );
             }
+
+            // Bookkeeper's length
+            playerPatterns.maxBookKeepersLength = nbt.getInt("player_"+i+"_max_bookkeeper_length");
 
             // Add to list
             playerPatternList.put(
@@ -171,6 +198,9 @@ public class StorageManager extends PersistentState {
                     nbt.putString("player_"+i+"_redirect_"+x+"_output", playerPatterns.redirectListRaw.get(input));
                 x++;
             }
+
+            // Bookkeeper's length
+            nbt.putInt("player_"+i+"_max_bookkeeper_length", playerPatterns.maxBookKeepersLength);
 
             i++;
         }

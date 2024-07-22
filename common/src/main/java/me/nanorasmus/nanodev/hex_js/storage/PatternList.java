@@ -12,6 +12,7 @@ public class PatternList {
     public ArrayList<String> angleSignatureList = new ArrayList<>();
     public HashMap<String, ArrayList<HexAngle>> redirectList = new HashMap<>();
     public HashMap<String, String> redirectListRaw = new HashMap<>();
+    public int maxBookKeepersLength = -1;
 
     public PatternList() {
     }
@@ -32,6 +33,11 @@ public class PatternList {
         for (String redirectInput : redirects.keySet()) {
             addRedirect(redirectInput, redirects.get(redirectInput));
         }
+    }
+
+    public PatternList(boolean isWhitelist, ArrayList<String> angleSignatureList, HashMap<String, String> redirects, int maxBookKeepersLength) {
+        this(isWhitelist, angleSignatureList, redirects);
+        this.maxBookKeepersLength = maxBookKeepersLength;
     }
 
     public void clearPatternList() {
@@ -64,7 +70,8 @@ public class PatternList {
         return new PatternList(
                 isWhitelist,
                 new ArrayList<>(angleSignatureList),
-                new HashMap<>(redirectListRaw)
+                new HashMap<>(redirectListRaw),
+                this.maxBookKeepersLength
         );
     }
 
@@ -79,6 +86,10 @@ public class PatternList {
         return contains;
     }
 
+    public boolean contains(String signature) {
+        return angleSignatureList.contains(signature);
+    }
+
     public boolean blocks(HexPattern pattern) {
         boolean isBlocked = isWhitelist;
         for (String angleSignature : angleSignatureList) {
@@ -89,6 +100,16 @@ public class PatternList {
         }
         return isBlocked;
     }
+
+    public boolean blocks(String signature) {
+        boolean isBlocked = isWhitelist;
+        if (angleSignatureList.contains(signature)) {
+            isBlocked = !isWhitelist;
+        }
+        return isBlocked;
+    }
+
+
     public HexPattern handleRedirects(HexPattern pattern) {
         if (redirectList.containsKey(pattern.anglesSignature())) {
             return new HexPattern(pattern.getStartDir(), redirectList.get(pattern.anglesSignature()));
