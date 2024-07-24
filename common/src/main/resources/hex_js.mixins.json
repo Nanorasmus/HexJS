@@ -4,6 +4,7 @@
   "package": "me.nanorasmus.nanodev.hex_js.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "ForcedCastMediaDrawMixin",
     "SpellPatternBlockerC2SMixin"
   ],
   "client": [

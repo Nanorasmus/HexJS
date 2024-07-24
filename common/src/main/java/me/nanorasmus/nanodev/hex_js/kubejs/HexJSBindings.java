@@ -94,6 +94,9 @@ public class HexJSBindings {
             }
     )
     public void forceCastPlayerEntity(ServerPlayerEntity player, List<String> patterns) {
+        // Give the player an override to the staff requirement
+        StorageManager.currentlyForcedPlayers.add(player.getUuid());
+
         CastingHarness harness = IXplatAbstractions.INSTANCE.getHarness(player, Hand.MAIN_HAND);
 
         ArrayList<Iota> spell = IotaHelper.patternIotasFromStrings(new ArrayList<>(patterns));
@@ -107,6 +110,9 @@ public class HexJSBindings {
             IXplatAbstractions.INSTANCE.setHarness(player, harness);
         }
         IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, new MsgNewSpellPatternAck(clientInfo, 0));
+
+        // Remove the override
+        StorageManager.currentlyForcedPlayers.remove(player.getUuid());
     }
 
     @Info(

@@ -16,10 +16,10 @@ public class StorageManager extends PersistentState {
     public static final String saveId = HexJS.MOD_ID + ".save";
     public static StorageManager INSTANCE;
 
-
     public static PatternList defaultPatternList = new PatternList();
     public static HashMap<UUID, PatternList> playerPatternList = new HashMap<>();
 
+    public static ArrayList<UUID> currentlyForcedPlayers = new ArrayList<>();
 
     public static void save(MinecraftServer server) {
         server.getOverworld().getPersistentStateManager().set(saveId, INSTANCE);
