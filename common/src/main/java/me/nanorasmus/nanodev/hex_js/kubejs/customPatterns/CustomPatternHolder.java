@@ -60,7 +60,8 @@ public class CustomPatternHolder implements Action {
                 castingContext.getCaster(),
                 pattern,
                 new ArrayList<>(stack),
-                ravenmind
+                ravenmind,
+                castingContext
         );
         EventResult result = HexKubeJSPlugin.patternCastedEventHandler.post(ScriptType.SERVER, event);
 
