@@ -15,8 +15,12 @@ import com.mojang.datafixers.util.Pair;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import kotlin.jvm.functions.Function2;
 import me.nanorasmus.nanodev.hex_js.HexJS;
 import me.nanorasmus.nanodev.hex_js.helpers.IotaHelper;
+import me.nanorasmus.nanodev.hex_js.kubejs.customIotas.CustomIota;
+import me.nanorasmus.nanodev.hex_js.kubejs.customIotas.CustomIotaEntry;
+import me.nanorasmus.nanodev.hex_js.kubejs.customIotas.CustomIotaRegistry;
 import me.nanorasmus.nanodev.hex_js.kubejs.customPatterns.CustomPatternHolder;
 import me.nanorasmus.nanodev.hex_js.kubejs.customPatterns.CustomPatternRegistry;
 import me.nanorasmus.nanodev.hex_js.storage.StorageManager;
@@ -27,8 +31,13 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class HexJSBindings {
 
@@ -48,6 +57,36 @@ public class HexJSBindings {
         }
 
         return "";
+    }
+
+    // Custom Iotas
+    @Info(
+            value = "Registers a custom iota type",
+            params = {
+                    @Param(name = "identifier", value = "The ID of the iota type"),
+                    @Param(name = "init", value = ""),
+                    @Param(name = "isTruthy", value = ""),
+                    @Param(name = "toleratesOther", value = ""),
+                    @Param(name = "serialize", value = ""),
+                    @Param(name = "deserialize", value = "")
+            }
+    )
+    public void registerCustomIota(
+            @NotNull String identifier,
+            @NotNull Consumer<CustomIota> init,
+            @Nullable Function<CustomIota, Boolean> isTruthy,
+            @Nullable Function2<CustomIota, Iota, Boolean> toleratesOther,
+            @Nullable Function<CustomIota, NbtCompound> serialize,
+            @Nullable Function2<CustomIota, World, CustomIota> deserialize
+    ) {
+        CustomIotaRegistry.customIotas.put(identifier, new CustomIotaEntry(
+                identifier,
+                init,
+                isTruthy,
+                toleratesOther,
+                serialize,
+                deserialize
+        ));
     }
 
     // Custom Patterns

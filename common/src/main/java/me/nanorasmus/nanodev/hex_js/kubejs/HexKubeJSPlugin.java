@@ -6,12 +6,14 @@ import at.petrak.hexcasting.api.spell.iota.*;
 import at.petrak.hexcasting.api.spell.math.HexAngle;
 import at.petrak.hexcasting.api.spell.math.HexDir;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
+import at.petrak.hexcasting.common.lib.hex.HexIotaTypes;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.event.EventGroup;
 import dev.latvian.mods.kubejs.event.EventHandler;
 import dev.latvian.mods.kubejs.script.BindingsEvent;
 import me.nanorasmus.nanodev.hex_js.HexJS;
 import me.nanorasmus.nanodev.hex_js.helpers.IotaHelper;
+import me.nanorasmus.nanodev.hex_js.kubejs.customIotas.CustomIota;
 import me.nanorasmus.nanodev.hex_js.kubejs.customPatterns.CustomPatternCastedEvent;
 import me.nanorasmus.nanodev.hex_js.kubejs.customPatterns.CustomPatternRegistry;
 
@@ -49,11 +51,14 @@ public class HexKubeJSPlugin extends KubeJSPlugin {
         e.add("PatternIota", PatternIota.class);
         e.add("Vec3Iota", Vec3Iota.class);
 
+        e.add("CustomIota", CustomIota.class);
+
         // Misc hex stuff
         e.add("HexDir", HexDir.class);
         e.add("HexAngle", HexAngle.class);
         e.add("HexPattern", HexPattern.class);
         e.add("MediaConstants", MediaConstants.class);
+        e.add("HexIotaTypes", HexIotaTypes.class);
     }
 
     @Override
