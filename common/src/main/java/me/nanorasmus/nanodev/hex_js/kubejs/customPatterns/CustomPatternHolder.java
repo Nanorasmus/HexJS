@@ -81,9 +81,6 @@ public class CustomPatternHolder implements Action {
 
         ArrayList<OperatorSideEffect> sideEffects = new ArrayList<>();
 
-        if (event.getCost() > 0)
-            sideEffects.add(new OperatorSideEffect.ConsumeMedia(event.getCost()));
-
         if (event.isMishapping())
             sideEffects.add(new OperatorSideEffect.DoMishap(
                     new CustomPatternMishap(event.getMishapMessage()),

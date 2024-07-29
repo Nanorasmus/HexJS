@@ -2,11 +2,15 @@ package me.nanorasmus.nanodev.hex_js.kubejs.customPatterns;
 
 import at.petrak.hexcasting.api.misc.MediaConstants;
 import at.petrak.hexcasting.api.spell.casting.CastingContext;
+import at.petrak.hexcasting.api.spell.casting.CastingHarness;
 import at.petrak.hexcasting.api.spell.iota.Iota;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
+import at.petrak.hexcasting.xplat.IXplatAbstractions;
 import dev.latvian.mods.kubejs.event.EventExit;
 import dev.latvian.mods.kubejs.event.EventJS;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.entity.Entity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
@@ -18,10 +22,11 @@ public class CustomPatternCastedEvent extends EventJS {
     private ArrayList<Iota> stack;
     private Iota ravenmind;
     private CastingContext context;
+    @HideFromJS
+    private CastingHarness harness = null;
 
     private boolean shouldMishap = false;
     private String mishapMessage = "Mishap message not found!";
-    private int cost = 0;
 
     public CustomPatternCastedEvent(Entity caster, HexPattern pattern, ArrayList<Iota> stack, Iota ravenmind, CastingContext context) {
         this.caster = caster;
@@ -71,14 +76,12 @@ public class CustomPatternCastedEvent extends EventJS {
         return mishapMessage;
     }
 
-    public int getCost() {
-        return cost;
-    }
-    public void setCost(int newCost) {
-        cost = newCost;
-    }
-    public void setCostInDust(double newCost) {
-        cost = (int) Math.floor(newCost * MediaConstants.DUST_UNIT);
+    public int tryConsumeMedia(int media) {
+        if (harness == null) {
+            harness = IXplatAbstractions.INSTANCE.getHarness((ServerPlayerEntity) caster, context.getCastingHand());
+        }
+
+        return harness.withdrawMedia(media, context.getCanOvercast());
     }
 
     public void finish() throws EventExit {
